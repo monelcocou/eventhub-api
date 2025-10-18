@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== MODÈLES ====================
+
+model User {
+  id                     Int       @id @default(autoincrement())
+  email                  String    @unique
+  password               String
+  firstName              String
+  lastName               String
+  role                   String    @default("user") // user, organizer, admin
+  avatar                 String?
+  isEmailVerified        Boolean   @default(false)
+  emailVerificationToken String?   @unique
+  resetPasswordToken     String?   @unique
+  resetPasswordExpires   DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  deletedAt              DateTime? // Soft delete
+
+  // Relations
+  organizedEvents Event[]        @relation("EventOrganizer")
+  registrations   Registration[]
+  refreshTokens   RefreshToken[]
+
+  @@map("users")
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  events Event[]
+
+  @@map("categories")
+}
+
+model Event {
+  id              Int       @id @default(autoincrement())
+  title           String
+  slug            String    @unique
+  description     String    @db.Text
+  image           String?
+  location        String
+  startDate       DateTime
+  endDate         DateTime
+  maxParticipants Int?
+  price           Decimal   @default(0) @db.Decimal(10, 2)
+  status          String    @default("draft") // draft, published, cancelled, completed
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime? // Soft delete
+
+  // Relations
+  organizer     User           @relation("EventOrganizer", fields: [organizerId], references: [id])
+  organizerId   Int
+  category      Category       @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  registrations Registration[]
+
+  @@map("events")
+}
+
+model Registration {
+  id           Int       @id @default(autoincrement())
+  status       String    @default("confirmed") // pending, confirmed, cancelled
+  registeredAt DateTime  @default(now())
+  cancelledAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  user    User  @relation(fields: [userId], references: [id])
+  userId  Int
+  event   Event @relation(fields: [eventId], references: [id])
+  eventId Int
+
+  @@unique([userId, eventId]) // Un user ne peut s'inscrire qu'une fois par event
+  @@map("registrations")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  @@map("refresh_tokens")
+}
