@@ -5,17 +5,9 @@ import {
   MinLength,
   MaxLength,
   Matches,
-  IsEnum,
-  IsOptional,
 } from 'class-validator';
 
-export enum UserRole {
-  USER = 'user',
-  ORGANIZER = 'organizer',
-  ADMIN = 'admin',
-}
-
-export class CreateUserDto {
+export class RegisterDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -41,13 +33,4 @@ export class CreateUserDto {
   @MinLength(2)
   @MaxLength(50)
   lastName: string;
-
-  @IsEnum(UserRole)
-  @IsOptional()
-  role?: UserRole;
-
-  @IsString()
-  @IsOptional()
-  @MaxLength(500)
-  avatar?: string;
 }
