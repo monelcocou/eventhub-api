@@ -76,6 +76,7 @@ model Event {
   category      Category       @relation(fields: [categoryId], references: [id])
   categoryId    Int
   registrations Registration[]
+  EventTag      EventTag[]
 
   @@map("events")
 }
@@ -109,4 +110,31 @@ model RefreshToken {
   userId Int
 
   @@map("refresh_tokens")
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  slug      String   @unique
+  color     String? // Couleur hex : #FF5733
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation Many-to-Many avec Events
+  events EventTag[]
+
+  @@map("tags")
+}
+
+model EventTag {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  tagId     Int
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tag   Tag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, tagId])
+  @@map("event_tags")
 }
