@@ -76,7 +76,7 @@ model Event {
   category      Category       @relation(fields: [categoryId], references: [id])
   categoryId    Int
   registrations Registration[]
-  EventTag      EventTag[]
+  eventTag      EventTag[]
 
   @@map("events")
 }
