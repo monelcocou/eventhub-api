@@ -12,6 +12,7 @@ import slugify from 'slugify';
 @Injectable()
 export class CategoriesService {
   constructor(private readonly repository: CategoriesRepository) {}
+
   async create(createCategoryDto: CreateCategoryDto) {
     // Générer le slug depuis le nom
     const slug = slugify(createCategoryDto.name, {
