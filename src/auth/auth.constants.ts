@@ -4,6 +4,6 @@ export const jwtConstants = {
   refreshSecret:
     process.env.JWT_REFRESH_SECRET ||
     'your-refresh-secret-key-change-me-in-production',
-  accessExpiresIn: '15m',
-  refreshExpiresIn: '7d',
+  accessExpiresIn: '15m' as const,
+  refreshExpiresIn: '7d' as const,
 };
