@@ -13,8 +13,10 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
+@Public()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
