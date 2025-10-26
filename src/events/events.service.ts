@@ -94,6 +94,22 @@ export class EventsService {
       where,
       orderBy: { startDate: 'asc' },
     });
+
+    //Utilisation
+    // # Événements publiés
+    //   curl "http://localhost:3000/events?status=published"
+    //
+    // # Catégorie 1
+    //   curl "http://localhost:3000/events?categoryId=1"
+    //
+    // # Recherche
+    //   curl "http://localhost:3000/events?search=concert"
+    //
+    // # Pagination
+    //   curl "http://localhost:3000/events?page=1&limit=10"
+    //
+    // # Combiné
+    //   curl "http://localhost:3000/events?status=published&categoryId=1&page=1&limit=10"
   }
 
   // ==========================================
